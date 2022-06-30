@@ -1,4 +1,4 @@
-package org.example;
+package ru.schmitt.wordcounter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

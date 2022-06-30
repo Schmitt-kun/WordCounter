@@ -1,14 +1,11 @@
-package org.example.rest;
+package ru.schmitt.wordcounter.rest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import java.io.File;
@@ -18,7 +15,7 @@ import java.util.Date;
 
 @RestController
 public class Controller {
-    private Logger logger = LoggerFactory.getLogger(Controller.class);
+    private final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     @GetMapping
     public String testController() {
@@ -29,7 +26,7 @@ public class Controller {
     public ResponseEntity<String> get() {
         logger.info("Homepage");
         try {
-            File f = new ClassPathResource("Front/Home.html").getFile();
+            File f = new ClassPathResource("front/index.html").getFile();
             return ResponseEntity.ok(new String(Files.readAllBytes(f.toPath())));
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -38,12 +35,21 @@ public class Controller {
 
     @GetMapping("/{filename}")
     public ResponseEntity<byte[]> getResource(@PathVariable String filename) {
-        logger.info("Get file {}", filename);
+        logger.info("Get file '{}'", filename);
+        if (filename.isEmpty()) {
+            filename = "index.html";
+        }
         try {
-            File f = new ClassPathResource("Front/" + filename).getFile();
+            File f = new ClassPathResource("front/" + filename).getFile();
             return ResponseEntity.ok(Files.readAllBytes(f.toPath()));
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadText(@RequestParam String sourceText) {
+        logger.info("Received text [{} chars]: {}", sourceText.length(), sourceText.substring(0, Math.min(sourceText.length(), 100)));
+        return  ResponseEntity.ok(sourceText.length() + "");
     }
 }

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#textareaForm").submit(function (event) {
+
+                var data = {
+                    sourceText: $("#ftext").val()
+                };
+
+                $.ajax({
+                  type: "POST",
+                  url: "/upload",
+                  data: data,
+                  dataType: "json",
+                  encode: true,
+                }).done(function (data) {
+                  console.log(data);
+                });
+
+                event.preventDefault();
+            });
+        });
+</script>
+</head>
+<body>
+    Hello world!
+    <br>
+    <br>
+    <form id="textareaForm">
+        <label for="ftext">Enter text:</label>
+        <br>
+        <textarea name="sourceText" id="ftext" width="100%" rows="10"></textarea>
+        <br>
+        <button id="submitBtn" type="submit">Submit</button>
+    </form>
+</body>
+</html>
