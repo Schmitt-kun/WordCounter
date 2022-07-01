@@ -6,12 +6,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.schmitt.wordcounter.counter.Counter;
 
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Date;
+import java.util.Map;
 
 @RestController
 public class Controller {
@@ -50,6 +52,7 @@ public class Controller {
     @PostMapping("/upload")
     public ResponseEntity<String> uploadText(@RequestParam String sourceText) {
         logger.info("Received text [{} chars]: {}", sourceText.length(), sourceText.substring(0, Math.min(sourceText.length(), 100)));
-        return  ResponseEntity.ok(sourceText.length() + "");
+        Map<String, Integer> res = new Counter().count(sourceText);
+        return  ResponseEntity.ok("{\"Different words\": " + res.size() + "}");
     }
 }
